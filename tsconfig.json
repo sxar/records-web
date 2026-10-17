@@ -1,0 +1,23 @@
+{
+  // Minimal config so the TypeScript files in this repo — playwright.config.ts
+  // and the generated specs — resolve types. The app itself is JSX/JS and is
+  // built by Vite, which does not consult this file.
+  //
+  // Uses a JSONC line comment rather than the "//" key idiom on purpose: a
+  // quoted "//" is matched as an API route by Testbot's diff endpoint extractor
+  // (preflight.ts pathLiteral), which then probes <baseUrl>// , gets a 404 and
+  // fails the run as STALE_IMAGE.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": ["playwright.config.ts", "tests/**/*.ts"]
+}

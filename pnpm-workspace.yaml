@@ -1,0 +1,14 @@
+# pnpm 11 no longer reads settings from the "pnpm" field in package.json —
+# they live here. Keys placed in package.json are silently IGNORED with only a
+# [WARN], so a dependency pin can stop applying without anything failing.
+
+# Security pin carried over from npm's top-level `overrides` (npm's field is not
+# read by pnpm at all).
+overrides:
+  qs: ^6.15.2
+
+# pnpm >= 10 blocks dependency lifecycle scripts unless explicitly allowlisted,
+# and `pnpm install` exits non-zero when any are ignored — which would fail CI.
+# Cypress' postinstall downloads its binary, so it must be allowed.
+allowBuilds:
+  cypress: true
