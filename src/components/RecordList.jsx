@@ -46,22 +46,31 @@ const Record = (props) => (
 
 export default function RecordList() {
   const [records, setRecords] = useState([]);
+  const [positionFilter, setPositionFilter] = useState("");
 
   // This method fetches the records from the database.
   useEffect(() => {
+    let ignore = false;
     async function getRecords() {
-      const response = await fetch(`/record/`);
+      const position = positionFilter.trim();
+      const url = position
+        ? `/record/?position=${encodeURIComponent(position)}`
+        : `/record/`;
+      const response = await fetch(url);
       if (!response.ok) {
         const message = `An error occurred: ${response.statusText}`;
         console.error(message);
         return;
       }
       const records = await response.json();
-      setRecords(records);
+      // Skip responses for a filter value the user has already typed past.
+      if (!ignore) setRecords(records);
     }
     getRecords();
-    return;
-  }, [records.length]);
+    return () => {
+      ignore = true;
+    };
+  }, [records.length, positionFilter]);
 
   // This method will delete a record
   async function deleteRecord(id) {
@@ -89,6 +98,25 @@ export default function RecordList() {
   return (
     <>
       <h3 className="text-lg font-semibold p-4">Employee Records</h3>
+      <div className="px-4 pb-4">
+        <label
+          htmlFor="positionFilter"
+          className="block text-sm font-medium leading-6 text-slate-900"
+        >
+          Filter by position
+        </label>
+        <div className="mt-2 flex rounded-md shadow-sm ring-1 ring-inset ring-slate-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+          <input
+            type="text"
+            name="positionFilter"
+            id="positionFilter"
+            className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm sm:leading-6"
+            placeholder="Engineer"
+            value={positionFilter}
+            onChange={(e) => setPositionFilter(e.target.value)}
+          />
+        </div>
+      </div>
       <div className="border rounded-lg overflow-hidden">
         <div className="relative w-full overflow-auto">
           <table className="w-full caption-bottom text-sm">
