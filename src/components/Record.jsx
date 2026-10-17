@@ -8,6 +8,7 @@ export default function Record() {
     level: "",
   });
   const [isNew, setIsNew] = useState(true);
+  const [nameError, setNameError] = useState("");
   const [positionError, setPositionError] = useState("");
   const params = useParams();
   const navigate = useNavigate();
@@ -56,6 +57,12 @@ export default function Record() {
   // This function will handle the submission.
   async function onSubmit(e) {
     e.preventDefault();
+    const hasName = form.name.trim().length > 1;
+    if (!hasName) {
+      setNameError("Name is required.");
+      return;
+    }
+    setNameError("");
     // A record without a position is not useful downstream, so block the
     // submission client-side rather than persisting an incomplete record.
     if (!form.position.trim()) {
@@ -133,9 +140,15 @@ export default function Record() {
                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="First Last"
                     value={form.name}
-                    onChange={(e) => updateForm({ name: e.target.value })}
+                    onChange={(e) => {
+                      updateForm({ name: e.target.value });
+                      if (nameError) setNameError("");
+                    }}
                   />
                 </div>
+                {nameError && (
+                  <p className="mt-2 text-sm text-red-600">{nameError}</p>
+                )}
               </div>
             </div>
             <div className="sm:col-span-4">
