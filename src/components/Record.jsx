@@ -57,7 +57,7 @@ export default function Record() {
   // This function will handle the submission.
   async function onSubmit(e) {
     e.preventDefault();
-    const hasName = (form.name ?? "").trim().length > 0;
+    const hasName = String(form.name ?? "").trim().length > 0;
     if (!hasName) {
       setNameError("Name is required.");
       return;
